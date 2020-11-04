@@ -377,72 +377,6 @@
           }
         },
         {
-          "id": "33b5f99b-29c8-490e-8bcc-ba99493b8c88",
-          "type": "basic.code",
-          "data": {
-            "code": "// line counter\nreg [9:0] teller = 0;\nreg [9:0] paddr = 0;\nreg vis = 0, vis_l;\nreg vsync = 1;\nreg hsync = 1;\nreg [11:0] maddr = 0;\n\nalways @ (posedge clk)\nbegin\n    if (eol_in == 1)\n    begin\n        if (teller == 479)\n            vis <= 0;\n        if (teller == 479 + 10)\n            vsync <= 0;\n        if (teller == 479 + 10 + 2)\n            vsync <= 1;\n        if (teller == 524)\n        begin\n            teller <=0;\n            vis <= 1;\n            maddr <= 0;\n        end\n        else\n            teller <= teller + 1;\n    end\n    \n    if (vis & vis_l) maddr <= maddr + 1;\n\n    //latch\n    paddr <= pa_in;\n    hsync <= hs_in;\n    vis_l <= vis_in;\nend\n\nassign laddr = teller;\nassign visible = vis_l & vis;\n",
-            "params": [],
-            "ports": {
-              "in": [
-                {
-                  "name": "clk"
-                },
-                {
-                  "name": "pa_in",
-                  "range": "[9:0]",
-                  "size": 10
-                },
-                {
-                  "name": "hs_in"
-                },
-                {
-                  "name": "vis_in"
-                },
-                {
-                  "name": "eol_in"
-                }
-              ],
-              "out": [
-                {
-                  "name": "paddr",
-                  "range": "[9:0]",
-                  "size": 10
-                },
-                {
-                  "name": "laddr",
-                  "range": "[9:0]",
-                  "size": 10
-                },
-                {
-                  "name": "hsync"
-                },
-                {
-                  "name": "vsync"
-                },
-                {
-                  "name": "visible"
-                },
-                {
-                  "name": "eof"
-                },
-                {
-                  "name": "maddr",
-                  "range": "[11:0]",
-                  "size": 12
-                }
-              ]
-            }
-          },
-          "position": {
-            "x": 1016,
-            "y": 136
-          },
-          "size": {
-            "width": 416,
-            "height": 688
-          }
-        },
-        {
           "id": "1450f183-e37d-4916-a95f-b1f4a4081b7a",
           "type": "basic.code",
           "data": {
@@ -712,6 +646,72 @@
           "size": {
             "width": 520,
             "height": 496
+          }
+        },
+        {
+          "id": "33b5f99b-29c8-490e-8bcc-ba99493b8c88",
+          "type": "basic.code",
+          "data": {
+            "code": "// line counter\nreg [9:0] teller = 0;\nreg [9:0] paddr = 0;\nreg vis = 0, vis_l;\nreg vsync = 1;\nreg hsync = 1;\n\nalways @ (posedge clk)\nbegin\n    if (eol_in == 1)\n    begin\n        if (teller == 479)\n            vis <= 0;\n        if (teller == 479 + 10)\n            vsync <= 0;\n        if (teller == 479 + 10 + 2)\n            vsync <= 1;\n        if (teller == 524)\n        begin\n            teller <=0;\n            vis <= 1;\n        end\n        else\n            teller <= teller + 1;\n    end\n    \n    //latch\n    paddr <= pa_in;\n    hsync <= hs_in;\n    vis_l <= vis_in;\nend\n\nassign laddr = teller;\nassign visible = vis_l & vis;\nassign raddr = (teller[9:4] << 4) + (teller[9:4] << 6) + paddr[9:3];",
+            "params": [],
+            "ports": {
+              "in": [
+                {
+                  "name": "clk"
+                },
+                {
+                  "name": "pa_in",
+                  "range": "[9:0]",
+                  "size": 10
+                },
+                {
+                  "name": "hs_in"
+                },
+                {
+                  "name": "vis_in"
+                },
+                {
+                  "name": "eol_in"
+                }
+              ],
+              "out": [
+                {
+                  "name": "paddr",
+                  "range": "[9:0]",
+                  "size": 10
+                },
+                {
+                  "name": "laddr",
+                  "range": "[9:0]",
+                  "size": 10
+                },
+                {
+                  "name": "hsync"
+                },
+                {
+                  "name": "vsync"
+                },
+                {
+                  "name": "visible"
+                },
+                {
+                  "name": "eof"
+                },
+                {
+                  "name": "raddr",
+                  "range": "[11:0]",
+                  "size": 12
+                }
+              ]
+            }
+          },
+          "position": {
+            "x": 1016,
+            "y": 136
+          },
+          "size": {
+            "width": 416,
+            "height": 688
           }
         }
       ],
@@ -1094,17 +1094,6 @@
         },
         {
           "source": {
-            "block": "33b5f99b-29c8-490e-8bcc-ba99493b8c88",
-            "port": "maddr"
-          },
-          "target": {
-            "block": "ea43e648-b320-47eb-acda-f76cfc451134",
-            "port": "raddr"
-          },
-          "size": 12
-        },
-        {
-          "source": {
             "block": "d79c5df8-05af-4f58-bda6-8fd61457c4ee",
             "port": "clock_out"
           },
@@ -1168,6 +1157,17 @@
               "y": 1272
             }
           ]
+        },
+        {
+          "source": {
+            "block": "33b5f99b-29c8-490e-8bcc-ba99493b8c88",
+            "port": "raddr"
+          },
+          "target": {
+            "block": "ea43e648-b320-47eb-acda-f76cfc451134",
+            "port": "raddr"
+          },
+          "size": 12
         }
       ]
     }
